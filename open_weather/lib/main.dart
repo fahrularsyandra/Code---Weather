@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:open_weather/views/home_view.dart';
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 void main() {
+  initializeDateFormatting();
+
   runApp(const MyApp());
 }
 
@@ -24,7 +29,8 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const HomeView(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
