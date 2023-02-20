@@ -1,21 +1,90 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:open_weather/repositories/weather_repository.dart';
+import 'package:open_weather/bloc/cubit/weather_cubit.dart';
+import 'package:open_weather/bloc/weather_bloc.dart';
+import 'package:open_weather/bloc/weather_event.dart';
+import 'package:open_weather/models/weather_model.dart';
 import 'package:open_weather/styles/text.dart';
-import 'package:intl/intl.dart';
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:open_weather/views/components/daily_weather_card.dart';
 import 'package:open_weather/views/components/hourly_weather_card.dart';
+import 'package:open_weather/views/setting_view.dart';
+import 'package:open_weather/views/splash_screen.dart';
 
-class HomeView extends StatelessWidget {
+class HomeView extends StatefulWidget {
   const HomeView({super.key});
 
   @override
+  State<HomeView> createState() => _HomeViewState();
+}
+
+class _HomeViewState extends State<HomeView> {
+  final _weatherBloc = WeatherBloc();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _weatherBloc.add(GetWeather());
+  }
+
+  @override
+  void dispose() {
+    _weatherBloc.close();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    WeatherRepository().getCurrentWeather();
+    // WeatherRepository().getCurrentWeather();
     var width = MediaQuery.of(context).size.width;
+    return BlocProvider(
+      create: (_) => _weatherBloc,
+      child: BlocListener<WeatherBloc, WeatherState>(
+        listener: (context, state) {
+          if (state is WeatherError) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text(state.errorMessage ?? 'Something went wrong!')));
+          }
+        },
+        child: BlocBuilder<WeatherBloc, WeatherState>(
+          builder: (context, state) {
+            if (state is WeatherInitial) {
+              return const SplashScreen();
+            } else if (state is WeatherLoading) {
+              return const SplashScreen();
+            } else if (state is WeatherLoaded) {
+              return View(context, state.weatherModel);
+            } else if (state is WeatherError) {
+              return Container(
+                child: Text(
+                  state.errorMessage ?? 'Error',
+                  style: textStyle(12, FontWeight.w400, Colors.white),
+                ),
+              );
+            }
+            return Container();
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class View extends StatelessWidget {
+  BuildContext context;
+  WeatherModel weather;
+  View(
+    this.context,
+    this.weather, {
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: PreferredSize(
           preferredSize: Size.fromHeight(400),
@@ -41,7 +110,7 @@ class HomeView extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        "Sungai Harapan, Batam City",
+                        weather.name ?? '-',
                         style: GoogleFonts.roboto(
                             fontWeight: FontWeight.w700,
                             color: Colors.white,
@@ -53,9 +122,15 @@ class HomeView extends StatelessWidget {
                       )
                     ],
                   ),
-                  const Icon(
-                    Icons.tune,
-                    color: Colors.white,
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (_) => SettingView()));
+                    },
+                    child: const Icon(
+                      Icons.tune,
+                      color: Colors.white,
+                    ),
                   )
                 ],
               ),
@@ -85,12 +160,12 @@ class HomeView extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Few Clouds',
+                          weather.weather![0].main ?? '-',
                           style: textStyle(
                               10.toDouble(), FontWeight.w400, Colors.white),
                         ),
                         Text(
-                          'Moderate breeze',
+                          weather.weather![0].description ?? '-',
                           style: textStyle(
                               10.toDouble(), FontWeight.w400, Colors.white54),
                         ),
@@ -99,13 +174,13 @@ class HomeView extends StatelessWidget {
                   ],
                 ),
                 Text(
-                  '30\u00B0C',
+                  '${(weather.main!.temp! - 273.15).toStringAsFixed(0)}\u00B0C',
                   style: textStyle(60, FontWeight.w200, Colors.white),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 4),
                   child: Text(
-                    'Feels like 34\u00B0C',
+                    'Feels like ${(weather.main!.feelsLike! - 273.15).toStringAsFixed(0)}\u00B0C',
                     style: textStyle(10, FontWeight.w500, Colors.white54),
                   ),
                 )
@@ -174,11 +249,11 @@ class HomeView extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Wind: 7.2m/s NE',
+                          'Wind: ${(weather.wind!.speed)!.toStringAsFixed(1)}m/s NE',
                           style: textStyle(14, FontWeight.w700, Colors.white),
                         ),
                         Text(
-                          'Humidity: 66%',
+                          'Humidity: ${weather.main!.humidity}%',
                           style: textStyle(14, FontWeight.w700, Colors.white),
                         ),
                         Text(
@@ -194,11 +269,11 @@ class HomeView extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Pressure: 1013hPa',
+                          'Pressure: ${weather.main!.pressure}hPa',
                           style: textStyle(14, FontWeight.w700, Colors.white),
                         ),
                         Text(
-                          'Visibility: 10.0Km',
+                          'Visibility: ${(weather.visibility! / 1000).toStringAsFixed(1)}Km',
                           style: textStyle(14, FontWeight.w700, Colors.white),
                         ),
                         Text(
