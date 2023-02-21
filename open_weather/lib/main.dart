@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:open_weather/views/components/detail_weather_card.dart';
+import 'package:open_weather/views/different_weather_view.dart';
 import 'package:open_weather/views/home_view.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -31,6 +32,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: const HomeView(),
+      // home: const DifferentWeatherView(),
       debugShowCheckedModeBanner: false,
     );
   }

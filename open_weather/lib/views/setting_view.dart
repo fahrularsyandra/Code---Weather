@@ -8,6 +8,7 @@ import 'package:open_weather/models/weather_model.dart';
 import 'package:open_weather/styles/text.dart';
 import 'package:open_weather/views/components/daily_weather_card.dart';
 import 'package:open_weather/views/components/hourly_weather_card.dart';
+import 'package:open_weather/views/different_weather_view.dart';
 
 class SettingView extends StatelessWidget {
   const SettingView({super.key});
@@ -37,7 +38,7 @@ class SettingView extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   InkWell(
-                    onTap: (){
+                    onTap: () {
                       Navigator.pop(context);
                     },
                     child: Row(
@@ -75,21 +76,28 @@ class SettingView extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Different weather',
-                  style: textStyle(14, FontWeight.w400, Colors.white),
-                ),
-                IconButton(
-                    onPressed: null,
-                    icon: Icon(
-                      Icons.arrow_forward_ios,
-                      color: Colors.white,
-                      size: 16,
-                    )),
-              ],
+            SizedBox(
+              height: 20,
+            ),
+            InkWell(
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => DifferentWeatherView()));
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Different weather',
+                    style: textStyle(14, FontWeight.w400, Colors.white),
+                  ),
+                  Icon(
+                    Icons.arrow_forward_ios,
+                    color: Colors.white,
+                    size: 16,
+                  ),
+                ],
+              ),
             ),
             const Divider(
               color: Colors.white,
@@ -135,8 +143,14 @@ class SettingView extends StatelessWidget {
               """For professionals and specialists with middle sized project, we recommend our Professional collections, which included Current & Forecasts collection, Historical weather data collection, Weather Maps collection and other APIs. For Enterprise level projects we provide Enterprise license, which is included all forecast products and current state, along with alerts, maps, and other products. Learn more You can read the How to Start guide and enjoy using our powerful weather APIs right now.""",
               style: textStyle(14, FontWeight.w300, Colors.white),
             ),
-            SizedBox(height: 20,),
-            Image.network('https://seeklogo.com/images/O/openweather-logo-3CE20F48B5-seeklogo.com.png', width: 100,)
+            SizedBox(
+              height: 20,
+            ),
+            // Image.network('https://seeklogo.com/images/O/openweather-logo-3CE20F48B5-seeklogo.com.png', width: 100,)
+            Image.asset(
+              'assets/images/openWeather-logo.png',
+              width: 100,
+            ),
           ],
         ),
       ),
