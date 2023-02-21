@@ -9,6 +9,7 @@ import 'package:open_weather/bloc/weather_event.dart';
 import 'package:open_weather/models/weather_model.dart';
 import 'package:open_weather/styles/text.dart';
 import 'package:open_weather/views/components/daily_weather_card.dart';
+import 'package:open_weather/views/components/detail_weather_card.dart';
 import 'package:open_weather/views/components/hourly_weather_card.dart';
 import 'package:open_weather/views/setting_view.dart';
 import 'package:open_weather/views/splash_screen.dart';
@@ -38,7 +39,6 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    // WeatherRepository().getCurrentWeather();
     var width = MediaQuery.of(context).size.width;
     return BlocProvider(
       create: (_) => _weatherBloc,
@@ -73,7 +73,7 @@ class _HomeViewState extends State<HomeView> {
   }
 }
 
-class View extends StatelessWidget {
+class View extends StatefulWidget {
   BuildContext context;
   WeatherModel weather;
   View(
@@ -83,8 +83,22 @@ class View extends StatelessWidget {
   });
 
   @override
+  State<View> createState() => _ViewState();
+}
+
+class _ViewState extends State<View> {
+  bool _showDetail = false;
+  int selectedDate = 0;
+  void showDetailHandler() {
+    setState(() {
+      _showDetail = !_showDetail;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: PreferredSize(
           preferredSize: Size.fromHeight(400),
@@ -110,7 +124,7 @@ class View extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        weather.name ?? '-',
+                        widget.weather.name ?? '-',
                         style: GoogleFonts.roboto(
                             fontWeight: FontWeight.w700,
                             color: Colors.white,
@@ -160,12 +174,12 @@ class View extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          weather.weather![0].main ?? '-',
+                          widget.weather.weather![0].main ?? '-',
                           style: textStyle(
                               10.toDouble(), FontWeight.w400, Colors.white),
                         ),
                         Text(
-                          weather.weather![0].description ?? '-',
+                          widget.weather.weather![0].description ?? '-',
                           style: textStyle(
                               10.toDouble(), FontWeight.w400, Colors.white54),
                         ),
@@ -174,13 +188,13 @@ class View extends StatelessWidget {
                   ],
                 ),
                 Text(
-                  '${(weather.main!.temp! - 273.15).toStringAsFixed(0)}\u00B0C',
+                  '${(widget.weather.main!.temp! - 273.15).toStringAsFixed(0)}\u00B0C',
                   style: textStyle(60, FontWeight.w200, Colors.white),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 4),
                   child: Text(
-                    'Feels like ${(weather.main!.feelsLike! - 273.15).toStringAsFixed(0)}\u00B0C',
+                    'Feels like ${(widget.weather.main!.feelsLike! - 273.15).toStringAsFixed(0)}\u00B0C',
                     style: textStyle(10, FontWeight.w500, Colors.white54),
                   ),
                 )
@@ -194,44 +208,6 @@ class View extends StatelessWidget {
               style: textStyle(12, FontWeight.w700, Colors.white),
             ),
           ),
-          // Container(
-          //   color: Colors.white,
-          //   padding: const EdgeInsets.symmetric(vertical: 20),
-          //   height: 300,
-          //   width: width,
-          //   child: LineChart(
-          //     LineChartData(
-          //       lineTouchData: LineTouchData(enabled: true),
-          //       gridData: FlGridData(),
-          //       titlesData: FlTitlesData(
-          //         rightTitles: AxisTitles(),
-          //         topTitles: AxisTitles(),
-          //       ),
-          //       borderData: FlBorderData(
-          //           show: true,
-          //           border:
-          //               const Border(bottom: BorderSide(color: Colors.green))),
-          //       lineBarsData: [
-          //         LineChartBarData(
-          //           spots: const [
-          //             FlSpot(1, 1),
-          //             FlSpot(3, 1.5),
-          //             FlSpot(5, 1.4),
-          //             FlSpot(7, 3.4),
-          //             FlSpot(10, 2),
-          //             FlSpot(12, 2.2),
-          //             FlSpot(13, 1.8),
-          //           ],
-          //           barWidth: 2,
-          //         )
-          //       ],
-          //       minX: 0,
-          //       maxX: 14,
-          //       maxY: 20,
-          //       minY: 0,
-          //     ),
-          //   ),
-          // ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4.0),
             child: Container(
@@ -249,11 +225,11 @@ class View extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Wind: ${(weather.wind!.speed)!.toStringAsFixed(1)}m/s NE',
+                          'Wind: ${(widget.weather.wind!.speed)!.toStringAsFixed(1)}m/s NE',
                           style: textStyle(14, FontWeight.w700, Colors.white),
                         ),
                         Text(
-                          'Humidity: ${weather.main!.humidity}%',
+                          'Humidity: ${widget.weather.main!.humidity}%',
                           style: textStyle(14, FontWeight.w700, Colors.white),
                         ),
                         Text(
@@ -269,11 +245,11 @@ class View extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Pressure: ${weather.main!.pressure}hPa',
+                          'Pressure: ${widget.weather.main!.pressure}hPa',
                           style: textStyle(14, FontWeight.w700, Colors.white),
                         ),
                         Text(
-                          'Visibility: ${(weather.visibility! / 1000).toStringAsFixed(1)}Km',
+                          'Visibility: ${(widget.weather.visibility! / 1000).toStringAsFixed(1)}Km',
                           style: textStyle(14, FontWeight.w700, Colors.white),
                         ),
                         Text(
@@ -288,7 +264,7 @@ class View extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 4),
+            padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 4),
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
@@ -299,8 +275,34 @@ class View extends StatelessWidget {
               ),
             ),
           ),
-          for (int i = 0; i < 7; i++)
-            DailyWeatherCard(DateTime.now().add(Duration(days: i)))
+          SizedBox(
+            height: 20,
+          ),
+          (!_showDetail)
+              ? SizedBox(
+                  height: height * 0.5,
+                  child: ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: 7,
+                    itemBuilder: (BuildContext context, int index) {
+                      return InkWell(
+                        onTap: (){
+                          setState(() {
+                            _showDetail = !_showDetail;
+                            selectedDate = index;
+                          });
+                        },
+                        child: DailyWeatherCard(
+                            DateTime.now().add(Duration(days: index))),
+                      );
+                    },
+                  ),
+                )
+              : DetailWeather((){
+                          setState(() {
+                            _showDetail = !_showDetail;
+                          });
+                        }, selectedDate, widget.weather)
         ],
       )),
     );

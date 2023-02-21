@@ -10,9 +10,16 @@ class SplashScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: Container(
-        child: Center(
-          child: Text('Loading..', style: textStyle(20, FontWeight.w500, Colors.white),),
+      body: SizedBox(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.height,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset('assets/images/openWeather-logo.png', width: 100,),
+            Text('Fetching the weather..', style: textStyle(20, FontWeight.w500, Colors.white),),
+          ],
         ),
       ),
     );
