@@ -4,6 +4,7 @@ import 'package:open_weather/views/different_weather_view.dart';
 import 'package:open_weather/views/home_view.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:open_weather/views/search_view.dart';
 
 void main() {
   initializeDateFormatting();
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: const HomeView(),
-      // home: const DifferentWeatherView(),
+      // home: const SearchView(),
       debugShowCheckedModeBanner: false,
     );
   }

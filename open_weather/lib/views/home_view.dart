@@ -11,6 +11,7 @@ import 'package:open_weather/styles/text.dart';
 import 'package:open_weather/views/components/daily_weather_card.dart';
 import 'package:open_weather/views/components/detail_weather_card.dart';
 import 'package:open_weather/views/components/hourly_weather_card.dart';
+import 'package:open_weather/views/search_view.dart';
 import 'package:open_weather/views/setting_view.dart';
 import 'package:open_weather/views/splash_screen.dart';
 
@@ -114,27 +115,33 @@ class _ViewState extends State<View> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Row(
-                    children: [
-                      const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Icon(
-                          Icons.search,
-                          color: Colors.white,
-                        ),
-                      ),
-                      Text(
-                        widget.weather.name ?? '-',
-                        style: GoogleFonts.roboto(
-                            fontWeight: FontWeight.w700,
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (_) => SearchView()));
+                    },
+                    child: Row(
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Icon(
+                            Icons.search,
                             color: Colors.white,
-                            fontSize: 18),
-                      ),
-                      const Icon(
-                        Icons.location_on_outlined,
-                        color: Colors.white,
-                      )
-                    ],
+                          ),
+                        ),
+                        Text(
+                          widget.weather.name ?? '-',
+                          style: GoogleFonts.roboto(
+                              fontWeight: FontWeight.w700,
+                              color: Colors.white,
+                              fontSize: 18),
+                        ),
+                        const Icon(
+                          Icons.location_on_outlined,
+                          color: Colors.white,
+                        )
+                      ],
+                    ),
                   ),
                   InkWell(
                     onTap: () {
@@ -286,7 +293,7 @@ class _ViewState extends State<View> {
                     itemCount: 7,
                     itemBuilder: (BuildContext context, int index) {
                       return InkWell(
-                        onTap: (){
+                        onTap: () {
                           setState(() {
                             _showDetail = !_showDetail;
                             selectedDate = index;
@@ -298,11 +305,11 @@ class _ViewState extends State<View> {
                     },
                   ),
                 )
-              : DetailWeather((){
-                          setState(() {
-                            _showDetail = !_showDetail;
-                          });
-                        }, selectedDate, widget.weather)
+              : DetailWeather(() {
+                  setState(() {
+                    _showDetail = !_showDetail;
+                  });
+                }, selectedDate, widget.weather)
         ],
       )),
     );
