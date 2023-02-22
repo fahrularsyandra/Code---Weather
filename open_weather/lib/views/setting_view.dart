@@ -8,6 +8,7 @@ import 'package:open_weather/models/weather_model.dart';
 import 'package:open_weather/styles/text.dart';
 import 'package:open_weather/views/components/daily_weather_card.dart';
 import 'package:open_weather/views/components/hourly_weather_card.dart';
+import 'package:open_weather/views/custom_unit_view.dart';
 import 'package:open_weather/views/different_weather_view.dart';
 
 class SettingView extends StatelessWidget {
@@ -76,48 +77,57 @@ class SettingView extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
-              height: 20,
-            ),
-            InkWell(
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => DifferentWeatherView()));
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Different weather',
-                    style: textStyle(14, FontWeight.w400, Colors.white),
-                  ),
-                  Icon(
-                    Icons.arrow_forward_ios,
-                    color: Colors.white,
-                    size: 16,
-                  ),
-                ],
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 12.0),
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => DifferentWeatherView()));
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Different weather',
+                      style: textStyle(14, FontWeight.w400, Colors.white),
+                    ),
+                    const Icon(
+                      Icons.arrow_forward_ios,
+                      color: Colors.white,
+                      size: 16,
+                    ),
+                  ],
+                ),
               ),
             ),
             const Divider(
               color: Colors.white,
               thickness: 0.5,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Customize units',
-                  style: textStyle(14, FontWeight.w400, Colors.white),
-                ),
-                const IconButton(
-                    onPressed: null,
-                    icon: Icon(
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12.0),
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (_) => CustomizeUnitView()));
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Customize units',
+                      style: textStyle(14, FontWeight.w400, Colors.white),
+                    ),
+                    const Icon(
                       Icons.arrow_forward_ios,
                       color: Colors.white,
                       size: 16,
-                    )),
-              ],
+                    ),
+                  ],
+                ),
+              ),
             ),
             const Divider(
               color: Colors.white,
